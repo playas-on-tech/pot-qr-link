@@ -18,11 +18,12 @@ export default async function AdminPage() {
       claimed: c.claimed,
       createdAt: c.createdAt,
       qrDataUrl: await qrDataUrl(c.id),
-      photoDataUrl: c.photo && c.photoMime
-        ? `data:${c.photoMime};base64,${Buffer.from(c.photo).toString("base64")}`
-        : null,
+      photoDataUrl:
+        c.photo && c.photoMime
+          ? `data:${c.photoMime};base64,${Buffer.from(c.photo).toString("base64")}`
+          : null,
     }))
   );
 
-  return <AdminDashboard cards={cards} />;
+  return <AdminDashboard cards={cards} total={cards.length} />;
 }

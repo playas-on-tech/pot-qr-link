@@ -7,14 +7,15 @@ import PrintButton from "./PrintButton";
 export default async function PrintPage({
   searchParams,
 }: {
-  searchParams: Promise<{ id?: string }>;
+  searchParams: Promise<{ id?: string; ids?: string }>;
 }) {
   const authed = await verifySession();
   if (!authed) redirect("/admin");
 
-  const { id } = await searchParams;
+  const { id, ids } = await searchParams;
 
-  const where = id ? { id } : { claimed: false };
+  const idList = ids ? ids.split(",").filter(Boolean) : null;
+  const where = idList ? { id: { in: idList } } : id ? { id } : { claimed: false };
   const unclaimed = await db.card.findMany({
     where,
     orderBy: { createdAt: "asc" },
@@ -41,7 +42,7 @@ export default async function PrintPage({
         <PrintButton />
         <a href="/admin">← Back to admin</a>
         <p style={{ marginTop: 8, color: "#6b7280", fontSize: 14 }}>
-          {id ? "1 QR code" : `${cards.length} unclaimed QR codes`}
+          {`${cards.length} QR code${cards.length !== 1 ? "s" : ""}`}
         </p>
       </div>
       <div className="grid">

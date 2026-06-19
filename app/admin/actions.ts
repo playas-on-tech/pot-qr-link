@@ -45,3 +45,15 @@ export async function deleteCard(id: string) {
   await db.card.delete({ where: { id } });
   revalidatePath("/admin");
 }
+
+export async function deleteCards(ids: string[]) {
+  await requireAdmin();
+  await db.card.deleteMany({ where: { id: { in: ids } } });
+  revalidatePath("/admin");
+}
+
+export async function resetCards(ids: string[]) {
+  await requireAdmin();
+  await db.card.updateMany({ where: { id: { in: ids } }, data: { claimed: false } });
+  revalidatePath("/admin");
+}
