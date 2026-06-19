@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-type Link = { label: string; url: string };
+export type Link = { label: string; url: string };
 
 export async function claimCard(id: string, formData: FormData) {
   const card = await db.card.findUnique({ where: { id } });

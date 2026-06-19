@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { claimCard } from "./actions";
-
-type Link = { label: string; url: string };
+import type { Link } from "./actions";
 
 const NETWORKS: { label: string; toUrl: (u: string) => string }[] = [
   { label: "LinkedIn",  toUrl: (u) => `https://linkedin.com/in/${u}` },
@@ -107,7 +106,7 @@ export default function ClaimForm({ id, defaults }: { id: string; defaults: Defa
           type="file"
           name="photo"
           accept="image/*"
-          className="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+          className="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
         />
         <p className="text-xs text-gray-400">Optional · max 5 MB</p>
       </div>
@@ -124,8 +123,8 @@ export default function ClaimForm({ id, defaults }: { id: string; defaults: Defa
                 onClick={() => toggleNetwork(label)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                   active
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600"
                 }`}
               >
                 {label}

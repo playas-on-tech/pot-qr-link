@@ -12,21 +12,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ponytail: brand palette pulled from banner — royal blue + cyan accent */
+:root {
+  --brand: #1e40af;
+  --brand-strong: #1d4ed8;
+  --brand-cyan: #0ea5e9;
+}
+
 @layer components {
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+    @apply bg-white rounded-3xl shadow-xl shadow-blue-900/5 ring-1 ring-blue-900/5 p-7;
   }
 
   .input {
-    @apply block rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900
-           placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500
-           focus:border-transparent transition-shadow;
+    @apply block rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-sm text-gray-900
+           placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500
+           focus:border-transparent focus:bg-white transition;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5
-           text-sm font-semibold text-white shadow-sm hover:bg-indigo-700
-           disabled:opacity-50 disabled:cursor-not-allowed transition-colors;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3
+           text-sm font-semibold text-white shadow-lg shadow-blue-600/20
+           disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:brightness-110;
+    background-image: linear-gradient(135deg, var(--brand-strong), var(--brand-cyan));
   }
 
   .btn-secondary {
@@ -37,7 +45,7 @@ body {
 
   .link-btn {
     @apply flex items-center justify-center w-full rounded-xl border border-gray-200
-           px-4 py-3 text-sm font-medium text-gray-700 hover:bg-indigo-50
-           hover:border-indigo-200 hover:text-indigo-700 transition-colors;
+           px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50
+           hover:border-blue-200 hover:text-blue-700 transition-colors;
   }
 }
