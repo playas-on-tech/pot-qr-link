@@ -4,11 +4,39 @@ import { qrDataUrl } from "@/lib/qr";
 import LoginForm from "./LoginForm";
 import AdminDashboard from "./AdminDashboard";
 
-export default async function AdminPage() {
+const PAGE_SIZE = 25;
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string }>;
+}) {
   const authed = await verifySession();
   if (!authed) return <LoginForm />;
 
-  const raw = await db.card.findMany({ orderBy: { createdAt: "desc" } });
+  const { q = "", page: pageStr = "1" } = await searchParams;
+  const page = Math.max(1, parseInt(pageStr) || 1);
+
+  const where = q
+    ? {
+        claimed: true,
+        OR: [
+          { name: { contains: q, mode: "insensitive" as const } },
+          { lastName: { contains: q, mode: "insensitive" as const } },
+        ],
+      }
+    : {};
+
+  const [raw, total] = await Promise.all([
+    db.card.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    db.card.count({ where }),
+  ]);
+
   const cards = await Promise.all(
     raw.map(async (c) => ({
       id: c.id,
@@ -25,5 +53,13 @@ export default async function AdminPage() {
     }))
   );
 
-  return <AdminDashboard cards={cards} total={cards.length} />;
+  return (
+    <AdminDashboard
+      cards={cards}
+      total={total}
+      page={page}
+      pageSize={PAGE_SIZE}
+      q={q}
+    />
+  );
 }

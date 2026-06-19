@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { generateBatch, logout, resetCard, deleteCard, deleteCards, resetCards } from "./actions";
 
 type Card = {
@@ -17,13 +18,19 @@ type Card = {
 type Props = {
   cards: Card[];
   total: number;
+  page: number;
+  pageSize: number;
+  q: string;
 };
 
-export default function AdminDashboard({ cards, total }: Props) {
+export default function AdminDashboard({ cards, total, page, pageSize, q }: Props) {
   const claimed = cards.filter((c) => c.claimed).length;
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const totalPages = Math.ceil(total / pageSize);
   const allSelected = cards.length > 0 && selected.size === cards.length;
   const someSelected = selected.size > 0;
 
@@ -58,13 +65,31 @@ export default function AdminDashboard({ cards, total }: Props) {
     window.open(`/admin/print?ids=${ids}`, "_blank");
   }
 
+  function onSearch(value: string) {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const params = new URLSearchParams();
+      if (value) params.set("q", value);
+      router.push(`/admin?${params}`);
+    }, 300);
+  }
+
+  function goToPage(p: number) {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    params.set("page", String(p));
+    router.push(`/admin?${params}`);
+  }
+
   return (
     <main className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-gray-900">QR Cards — Admin</h1>
           <p className="text-sm text-gray-500">
-            {total} total · {claimed} claimed · {total - claimed} unclaimed
+            {q
+              ? `${total} result${total !== 1 ? "s" : ""} for "${q}"`
+              : `${total} total · ${claimed} claimed · ${total - claimed} unclaimed`}
           </p>
         </div>
         <div className="flex gap-3">
@@ -94,6 +119,17 @@ export default function AdminDashboard({ cards, total }: Props) {
               Generate
             </button>
           </form>
+        </div>
+
+        {/* Search */}
+        <div className="max-w-sm">
+          <input
+            type="search"
+            placeholder="Search claimed cards by name…"
+            defaultValue={q}
+            onChange={(e) => onSearch(e.target.value)}
+            className="input w-full"
+          />
         </div>
 
         {/* Batch action bar */}
@@ -238,13 +274,36 @@ export default function AdminDashboard({ cards, total }: Props) {
               {cards.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                    No cards yet — generate some above.
+                    {q ? `No cards found for "${q}".` : "No cards yet — generate some above."}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <button
+              onClick={() => goToPage(page - 1)}
+              disabled={page <= 1}
+              className="btn-secondary text-sm disabled:opacity-40"
+            >
+              ← Prev
+            </button>
+            <span>
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => goToPage(page + 1)}
+              disabled={page >= totalPages}
+              className="btn-secondary text-sm disabled:opacity-40"
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );
