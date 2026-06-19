@@ -8,6 +8,21 @@ type Props = { params: Promise<{ id: string }> };
 
 const BG = "#b8e8f4";
 
+function PlayasonFooter() {
+  return (
+    <div className="mt-6 pb-6 flex justify-center">
+      <a
+        href="https://playasontech.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 text-xs text-gray-400 hover:text-gray-600 transition-colors underline"
+      >
+        <span>playasontech.com</span>
+      </a>
+    </div>
+  );
+}
+
 function Banner() {
   return (
     <div className="relative w-full">
@@ -52,6 +67,7 @@ export default async function CardPage({ params }: Props) {
             />
           </div>
         </div>
+        <PlayasonFooter />
       </main>
     );
   }
@@ -141,6 +157,7 @@ export default async function CardPage({ params }: Props) {
               Save contact
             </a>
           </div>
+          <PlayasonFooter />
         </div>
       </div>
     </main>
