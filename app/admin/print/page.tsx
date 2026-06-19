@@ -35,7 +35,7 @@ export default async function PrintPage({
         }
         .grid { display: flex; flex-wrap: wrap; gap: 8px; }
         .qr-card { width: 5cm; height: 2.5cm; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box; overflow: hidden }
-        .qr-card img { width: 2.5cm; height: 2.5cm; padding: 0.5cm; box-sizing: border-box; image-rendering: pixelated; display: block }
+        .qr-card img { width: 2.5cm; height: 2.5cm; padding: 0.25cm; box-sizing: border-box; image-rendering: pixelated; display: block }
       `}</style>
       <div className="no-print" style={{ padding: "16px" }}>
         <PrintButton />
